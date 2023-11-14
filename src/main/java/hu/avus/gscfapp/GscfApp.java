@@ -116,8 +116,8 @@ public class GscfApp {
                 .desc("""
                         Sets room equivalency strategy, options:
                         - %s (default) - Considers two rooms equivalent if the room dimensions match in any combination (eg. "12x34x45" is equivalent to "45x34x12", "12x34x45" is equivalent to "34x12x45")
-                        - %s - Considers two rooms equivalent if the room base dimensions (length and width) match in any combination (eg. "12x34x45" is equivalent to "34x12x45", but NOT equivalent to "45x34x1")
-                        - %s - Considers two rooms equivalent if all room dimensions match respectively (eg. length matches with length, width matches with width, height matches with height)
+                        - %s - Considers two rooms equivalent if the room base dimensions (length and width) match in any combination (eg. "12x34x45" is equivalent to "34x12x45", but NOT equivalent to "45x34x12")
+                        - %s - Considers two rooms equivalent if all room dimensions match respectively (eg. length matches length, width matches width, height matches height)
                         """.formatted(
                         RoomEquivalencyOption.FLEXIBLE.getValue(),
                         RoomEquivalencyOption.BASE.getValue(),

@@ -101,7 +101,7 @@ class GscfCalculatorTest {
         gscfCalculator.performCalculations();
 
         // then
-        Set<RoomRecord> results = ((CubicRoomFinder)processor).getResults();
+        Set<RoomRecord> results = ((CubicRoomFinder) processor).getResults();
         List<Integer> resultsList = results
                 .stream()
                 .map(RoomRecord::length)
@@ -121,7 +121,7 @@ class GscfCalculatorTest {
         gscfCalculator.performCalculations();
 
         // then
-        Map<RoomRecord, List<RoomRecord>> results = ((RepetitionFinder)processor).getResults();
+        Map<RoomRecord, List<RoomRecord>> results = ((RepetitionFinder) processor).getResults();
         assertEquals(mapCount, results.size());
     }
 

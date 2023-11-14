@@ -61,7 +61,7 @@ public class GscfCalculator {
                     .lineNumber(allLines)
                     .customArea(areaCalculator.calculateArea(dims.get(0), dims.get(1), dims.get(2)))
                     .build();
-                    areaCalculator.calculateArea(dims.get(0), dims.get(1), dims.get(2));
+            areaCalculator.calculateArea(dims.get(0), dims.get(1), dims.get(2));
             taskProcessors.forEach(taskProcessor -> taskProcessor.processLine(roomRecord));
         } else {
             invalidLines++;

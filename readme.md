@@ -1,35 +1,58 @@
+# GSCF Calculator App
 
-> Dear Candidate,
->
-> Below there is a java task which we would like you to solve. From a solution we expect code that is:    
->     • compiling    
->     • proven to be correct   
->     • clean and easy to read    
->     • well-structured (following good practices)
->
-> You can use any library and java version you want.
->
-> We wish you good luck!
+### Prerequisites
 
----
+Java 17
 
-# Task
+## Running tests
 
-A renovation company needs to hang new wallpaper in a bunch of rooms. They need to cover even the floors and ceilings with it.
+```bash
+./mvnw clean verify
+```
 
-They run out of wallpaper so they need to submit an order for more. Knowing the dimensions (length l, width w, and height h) of each room, they want to order only as much as they need.
+## Compiling the application
 
-Every room is a rectangular prism, which makes calculations easier: the surface area of room is 2\*l\*w + 2\*w\*h + 2\*h\*l.
+```bash
+./mvnw clean package
+```
 
-The company also need a little extra wallpaper for each room: the area of the smallest side.
+## Running the application
 
-**For example:**
-- A room with dimensions 1x2x3 requires 2\*2 + 2\*6 + 2\*3 = 22 square feet of wallpaper plus additional 2 square feet, for a total of 24 square feet.
-- A room with dimensions 1x1x5 requires 2\*1 + 2\*5 + 2\*5 = 22 square feet of wallpaper paper plus 1 additional square foot, for a total of 23 square feet.
+```bash
+java -jar target/gscf-app-jar-with-dependencies.jar
+```
+or
+```bash
+java -jar target/gscf-app-jar-with-dependencies.jar -h
+```
+or, specifying sample input file
+```bash
+java -jar target/gscf-app-jar-with-dependencies.jar sample-input.txt
+```
 
-**All numbers in the rooms list are in feet. Write application that will:**
-- take the list of room dimensions as input (use provided input file as an example)
-- calculate number of total square feet of wallpaper the company should order for all rooms from input 
-- list all rooms from input that have a cubic shape (order by total needed wallpaper descending)
-- list all rooms from input that are appearing more than once (order is irrelevant)
+## Customizing the application
+
+### Line validation strategy
+
+Parameter: -v
+
+Default value: smart
+
+Possible values:
+
+- smart: Parses any input with three numbers in it separated in any way (eg. <mark>Lorem 12 ipsum 34 dolor 45 sit amet</mark> parses to <mark>12x34x45</mark>)
+- sci (Strict Case-Insensitive): Parses any input with a [NUMBER]X[NUMBER]X[NUMBER] format case-insensitively (eg. <mark>12X34X45</mark>)
+- scs (Strict Case-Insensitive): Only parses inputs with a [NUMBER]x[NUMBER]x[NUMBER] format case-sensitively (eg. <mark>12x34x45</mark>)
+
+### Room equivalency strategy
+
+Parameter: -e
+
+Default value: flex
+
+Possible values:
+
+- flex: Considers two rooms equivalent if the room dimensions match in any combination (eg. <mark>12x34x45</mark> is equivalent to <mark>45x34x12</mark>, <mark>12x34x45</mark> is equivalent to <mark>34x12x45</mark>)
+- base: Considers two rooms equivalent if the room base dimensions (length and width) match in any combination (eg. <mark>12x34x45</mark> is equivalent to <mark>34x12x45</mark>, but NOT equivalent to <mark>45x34x1</mark>)
+- strict: Considers two rooms equivalent if all room dimensions match respectively (eg. length matches with length, width matches with width, height matches with height)
 

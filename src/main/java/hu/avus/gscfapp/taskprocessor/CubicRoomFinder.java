@@ -8,7 +8,7 @@ import java.util.TreeSet;
 
 public class CubicRoomFinder extends TaskProcessor<Set<RoomRecord>> {
 
-    final Set<RoomRecord> results;
+    private final Set<RoomRecord> results;
 
     public CubicRoomFinder() {
         results = new TreeSet<>(

@@ -7,13 +7,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class VeryStrictCaseSensitiveLineValidatorTest {
+class StrictCaseSensitiveLineValidatorTest {
 
     private LineValidator validator;
 
     @BeforeEach
     void init() {
-        validator = new VeryStrictCaseSensitiveLineValidator();
+        validator = new StrictCaseSensitiveLineValidator();
     }
 
     @ParameterizedTest

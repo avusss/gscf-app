@@ -7,6 +7,6 @@ import java.util.Map;
 
 public interface RoomEquivalencyStrategy {
 
-    void addRoomToMap(Map<RoomRecord, List<RoomRecord>> map, RoomRecord room);
+    RoomRecord getKeyForThisRecord(RoomRecord roomRecord);
 
 }

@@ -5,15 +5,23 @@ import hu.avus.gscfapp.inputdatasource.InputDataSource;
 import hu.avus.gscfapp.linevalidator.LineValidator;
 import hu.avus.gscfapp.linevalidator.LineValidatorFactory;
 import hu.avus.gscfapp.linevalidator.LineValidatorOption;
+import hu.avus.gscfapp.model.RoomRecord;
 import hu.avus.gscfapp.roomequivalency.RoomEquivalencyOption;
 import hu.avus.gscfapp.roomequivalency.RoomEquivalencyStrategy;
 import hu.avus.gscfapp.roomequivalency.RoomEquivalencyStrategyFactory;
-import hu.avus.gscfapp.taskprocessor.RoomAreaCalculatorHelper;
+import hu.avus.gscfapp.taskprocessor.*;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GscfApp {
+
+    public static final String SEPARATOR =
+            "--------------------------------------------------------------------------------";
 
     private static final String OPTION_HELP_SHORT = "h";
     private static final String OPTION_HELP_LONG = "help";
@@ -21,9 +29,12 @@ public class GscfApp {
     private static final String OPTION_ROOM_EQUIVALENCY_SHORT = "e";
 
     public static void main(String[] args) {
-
         GscfApp app = new GscfApp();
-        Options options = app.setOptions();
+        app.bootstrap(args);
+    }
+
+    private void bootstrap(String[] args) {
+        Options options = setOptions();
         CommandLineParser parser = new DefaultParser();
         try {
             CommandLine cmdLine = parser.parse(options, args);
@@ -31,7 +42,7 @@ public class GscfApp {
                     || cmdLine.getArgList().isEmpty();
 
             if (printHelp) {
-                app.printHelp(options);
+                printHelp(options);
                 System.exit(0);
             }
 
@@ -44,22 +55,29 @@ public class GscfApp {
                     RoomEquivalencyStrategyFactory.createRoomEquivalencyStrategy(
                             cmdLine.getOptionValue(OPTION_ROOM_EQUIVALENCY_SHORT));
 
+            List<TaskProcessor<?>> taskProcessors = List.of(
+                    new TotalAreaCalculator().setResultHandler(this::printTotalResult),
+                    new CubicRoomFinder().setResultHandler(this::printCubicShapedRooms),
+                    new RepetitionFinder(roomEquivalencyStrategy).setResultHandler(this::printRepetitiveRooms)
+            );
             GscfCalculator calculator = new GscfCalculator(
                     dataSource,
                     lineValidator,
                     roomAreaCalculator,
-                    roomEquivalencyStrategy);
+                    taskProcessors);
             calculator.performCalculations();
+
+            printLineReport(calculator.getAllLines(), calculator.getInvalidLines());
+            calculator.handleResults();
 
         } catch (ParseException e) {
             System.out.printf("Invalid command line input (%s)%n", e.getMessage());
-            app.printHelp(options);
+            printHelp(options);
             System.exit(1);
         } catch (IOException e) {
             System.out.printf("Input file could not be parsed (%s) %n", e.getMessage());
             System.exit(1);
         }
-
     }
 
     private void printHelp(Options options) {
@@ -113,6 +131,45 @@ public class GscfApp {
                 )
                 .build());
         return options;
+    }
+
+    private void printLineReport(int allLines, int invalidLines) {
+        System.out.printf("%d valid and %d invalid lines in input%n", allLines - invalidLines, invalidLines);
+    }
+
+    private void printTotalResult(long total) {
+        System.out.println(SEPARATOR);
+        System.out.println();
+        System.out.printf("Total area for input dataset: %,d ft²%n", total);
+        System.out.println();
+    }
+
+    private void printCubicShapedRooms(Set<RoomRecord> roomRecordList) {
+        System.out.println(SEPARATOR);
+        System.out.println();
+        System.out.println("List of cubic shaped rooms:");
+        roomRecordList.forEach(roomRecord -> System.out.printf("- Line %d: %dx%dx%d (adjusted area: %,d ft²)%n",
+                roomRecord.lineNumber(), roomRecord.length(), roomRecord.width(),
+                roomRecord.height(), roomRecord.customArea()));
+        System.out.println();
+    }
+
+    private void printRepetitiveRooms(Map<RoomRecord, List<RoomRecord>> occurrences) {
+        System.out.println(SEPARATOR);
+        System.out.println();
+        System.out.println("List of multiple appearances:");
+
+        occurrences.forEach((recordKey, records) -> {
+            System.out.printf("- %dx%dx%d (lines %s) %n",
+                    records.get(0).length(), records.get(0).width(), records.get(0).height(),
+                    records
+                            .stream()
+                            .map(roomRecord -> String.valueOf(roomRecord.lineNumber()))
+                            .collect(Collectors.joining(", "))
+            );
+        });
+
+        System.out.println();
     }
 
 }

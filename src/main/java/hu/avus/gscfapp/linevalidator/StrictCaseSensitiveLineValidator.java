@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
  * [NUMBER]x[NUMBER]x[NUMBER]
  * format (case-sensitive)
  */
-public class VeryStrictCaseSensitiveLineValidator implements LineValidator {
+public class StrictCaseSensitiveLineValidator implements LineValidator {
 
     private final Pattern pattern = Pattern.compile("\\d+x\\d+x\\d+");
 

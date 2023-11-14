@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LittlePermissiveCaseInsensitiveLineValidatorTest {
 
-    private LineValidator validator;
+    LineValidator validator;
 
     @BeforeEach
     void init() {

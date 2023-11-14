@@ -11,7 +11,7 @@ public class LineValidatorFactory {
                 .orElse(LineValidatorOption.SMART);
 
         return switch (option) {
-            case CASE_SENSITIVE -> new VeryStrictCaseSensitiveLineValidator();
+            case CASE_SENSITIVE -> new StrictCaseSensitiveLineValidator();
             case CASE_INSENSITIVE -> new LittlePermissiveCaseInsensitiveLineValidator();
             default -> new SmartLineValidator();
         };
